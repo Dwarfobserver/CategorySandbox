@@ -4,7 +4,7 @@ Reserved Notation "f >> g" (at level 60).
 
 Class Category
         (Ob: Type)
-        (Hom: Ob->Ob->Type)
+        (Hom: Ob -> Ob -> Type)
 := {
     ob   := Ob ;
     hom  := Hom where "a ~> b" := (Hom a b) ;
