@@ -14,7 +14,7 @@ Class Category
 
     id_r {a b: Ob} (f: a~>b) : f  >> id = f ;
     id_l {a b: Ob} (f: a~>b) : id >> f  = f ;
-    assoc {a b c d: Ob} (f: a~>b)(g: b~>c)(h: c~>d) :
+    assoc {a b c d: Ob} (f: a~>b) (g: b~>c) (h: c~>d) :
         (f >> g) >> h = f >> (g >> h) ;
 }.
 

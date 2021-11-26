@@ -1,4 +1,4 @@
 
 # CategorySandbox
 
-LMFI Coq project with Matthieu & Sidney.
+LMFI Coq project with Mathieu & Sidney.
