@@ -9,9 +9,9 @@ Reserved Notation "a ~> b" (at level 90, right associativity).
 Reserved Notation "f >> g" (at level 40, left associativity).
 
 Polymorphic Class Category := {
-    ob   : Type ;
-    hom  : ob -> ob -> Type where "a ~> b" := (hom a b);
-    id   {a: ob} : a~>a ;
+    ob : Type ;
+    hom : ob -> ob -> Type where "a ~> b" := (hom a b);
+    id {a: ob} : a~>a ;
     comp {a b c: ob} : a~>b -> b~>c -> a~>c where "f >> g" := (comp f g);
 
     cat_id_r {a b: ob} (f: a~>b) : f  >> id = f ;
@@ -55,6 +55,28 @@ apply (Build_Functor C C (fun x => x) (fun _ _ f => f)).
 - reflexivity.
 Defined.
 
+Print eq_ind_r.
+
+Definition eq_functor_aux {C D: Category} {F G: Functor C D} {a b: @ob C} (f: a~>b)
+    (e: forall (x: @ob C), @f_ob _ _ F x = @f_ob _ _ G x) :
+    ((@f_ob _ _ F a ~> @f_ob _ _ F b) -> (@f_ob _ _ G a ~> @f_ob _ _ G b)).
+rewrite !e. trivial.
+Defined.
+
+Definition eq_functor {C D: Category} (F G: Functor C D) : Prop := 
+    exists (e_ob: forall (a: @ob C), (@f_ob _ _ F a = @f_ob _ _ G a)),
+    forall (a b: @ob C) (f: a~>b),
+        let rw := eq_functor_aux f e_ob in
+        let Ff := rw (@f_hom _ _ F _ _ f) in
+        let Gf :=    (@f_hom _ _ G _ _ f) in
+        Ff = Gf.
+
+Lemma functor_id_id_eq C : eq_functor (id_functor C) (id_functor C).
+Proof.
+unfold eq_functor, eq_functor_aux. simpl.
+exists (fun (x: ob) => eq_refl x).
+Admitted.
+
 Definition comp_functor {C D E: Category} (F: Functor C D) (G: Functor D E) : Functor C E.
 apply (Build_Functor C E (fun c => f_ob (f_ob c)) (fun _ _ f => f_hom (f_hom f))).
 - intros. rewrite <-!f_id_distr. reflexivity.
@@ -85,7 +107,6 @@ apply (Build_Category Category Functor id_functor (fun _ _ _ f g => f >>> g)) ; 
 - apply functor_comp_assoc.
 Admitted.
 
-(* Dégueu *)
 Class Natural_Transformation {C D: Category} (F G: Functor C D) := {
     n_ob (a: @ob C) : (@f_ob _ _ F a) ~> (@f_ob _ _ G a);
     n_commute {a b: @ob C} (f: a ~> b) :
