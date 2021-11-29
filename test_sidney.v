@@ -31,28 +31,34 @@ Defined.
 Class Functor (C D: Category) := {
     f_ob : (@ob C) -> (@ob D) ;
     f_hom {a b: @ob C} (f: a ~> b) : f_ob a ~> f_ob b ;
+
+    f_id_distr (a: @ob C) : f_hom (@id _ a) = @id _ (f_ob a) ;
     f_commute {a b c: @ob C} (f: a ~> b) (g: b ~> c) :
         f_hom (f >> g) = (f_hom f) >> (f_hom g) ;
 }.
 
 Instance discrete_functor {A B} (f: A -> B) : Functor (discrete_cat A) (discrete_cat B).
-apply (Build_Functor (discrete_cat A) (discrete_cat B) f (f_equal f)).
-simpl. intros. apply eq_trans_map_distr.
+apply (Build_Functor (discrete_cat A) (discrete_cat B) f (f_equal f)) ; simpl.
+- reflexivity.
+- intros. apply eq_trans_map_distr.
 Defined.
 
 Instance constant_functor (C D: Category) (d: @ob D) : Functor C D.
 apply (Build_Functor C D (fun _ => d) (fun _ _ _ => @id _ d)).
-intros. apply (eq_sym (cat_id_r (@id _ d))).
+- reflexivity.
+- intros. apply (eq_sym (cat_id_r (@id _ d))).
 Defined.
 
 Instance id_functor (C: Category) : Functor C C.
 apply (Build_Functor C C (fun x => x) (fun _ _ f => f)).
-reflexivity.
+- reflexivity.
+- reflexivity.
 Defined.
 
 Definition comp_functor {C D E: Category} (F: Functor C D) (G: Functor D E) : Functor C E.
 apply (Build_Functor C E (fun c => f_ob (f_ob c)) (fun _ _ f => f_hom (f_hom f))).
-intros. rewrite <-!f_commute. reflexivity.
+- intros. rewrite <-!f_id_distr. reflexivity.
+- intros. rewrite <-!f_commute. reflexivity.
 Defined.
 Notation "f >>> g" := (comp_functor f g) (at level 40, left associativity).
 
