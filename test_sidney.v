@@ -1,15 +1,15 @@
 
-Require Import Nat List MSets.
+Require Import Nat List Equality.
 Import ListNotations.
 
 Reserved Infix "~>" (at level 90, right associativity).
 Reserved Infix ">>" (at level 40, left associativity).
 
 (* Comment conserver les notations en dehors de la définition ?
-   utilse les univers polymorphiques pour permettre d'avoir une catégorie de catégories.
+   Utilise les univers polymorphiques pour permettre d'avoir une catégorie de catégories.
 *)
 Polymorphic Class Category := {
-    ob   : Type;
+    ob   : Type ;
     hom  : ob -> ob -> Type where "a ~> b" := (hom a b) ;
     id   {a: ob} : a~>a;
     comp {a b c: ob} : a~>b -> b~>c -> a~>c
@@ -53,27 +53,54 @@ Defined.
 
 Definition comp_functor {C D E: Category} (F: Functor C D) (G: Functor D E) : Functor C E.
 apply (Build_Functor C E (fun c => f_ob (f_ob c)) (fun _ _ f => f_hom (f_hom f))).
-intros. rewrite<- f_commute. apply f_equal. rewrite f_commute. reflexivity.
+intros. rewrite <-!f_commute. reflexivity.
 Defined.
 
-Polymorphic Instance category_cat : Category.
-apply (Build_Category Category Functor id_functor (fun _ _ _ f g => comp_functor f g))
-    ; unfold id_functor ; unfold comp_functor ; simpl.
-- admit.
-- admit.
-- admit.
+Lemma functor_id_r {C D: Category} (F: Functor C D) : comp_functor F (id_functor D) = F.
+Proof.
+unfold comp_functor, id_functor. destruct F. simpl. f_equal.
+Admitted.
+
+Lemma functor_id_l {C D: Category} (F: Functor C D) : comp_functor (id_functor C) F = F.
+Proof.
+unfold comp_functor, id_functor. destruct F. simpl. f_equal.
+Admitted.
+
+Lemma functor_comp_assoc {A B C D: Category} (F: Functor A B) (G: Functor B C) (H: Functor C D) :
+    comp_functor (comp_functor F G) H = comp_functor F (comp_functor G H).
+Proof.
+Admitted.
+
+Instance category_cat : Category.
+apply (Build_Category Category Functor id_functor (fun _ _ _ f g => comp_functor f g)) ; intros.
+- apply functor_id_r.
+- apply functor_id_l.
+- apply functor_comp_assoc.
 Admitted.
 
 (* Dégueu *)
 Class Natural_Transformation {C D: Category} (F G: Functor C D) := {
-    n_ob (a b: @ob D) : @hom D a b;
+    n_ob (a: @ob C) : @hom D (@f_ob _ _ F a) (@f_ob _ _ G a);
     n_commute {a b: @ob C} (f: @hom C a b) :
-        let Na := (n_ob (@f_ob _ _ F a) (@f_ob _ _ G a)) in
-        let Nb := (n_ob (@f_ob _ _ F b) (@f_ob _ _ G b)) in
         let Ff := (@f_hom _ _ F _ _ f) in
         let Gf := (@f_hom _ _ G _ _ f) in
-        comp Ff Nb = comp Na Gf ;
+        comp Ff (n_ob b) = comp (n_ob a) Gf ;
 }.
+
+Instance id_nat_tr {C D: Category} (F: Functor C D) : Natural_Transformation F F.
+apply (Build_Natural_Transformation _ _ _ _ (fun a => @id _ (f_ob a))).
+intros.
+rewrite id_r, id_l. reflexivity.
+Defined.
+
+Instance comp_nat_tr {C D: Category} {F G H: Functor C D}
+    (S: Natural_Transformation F G) (T: Natural_Transformation G H) : Natural_Transformation F H.
+apply (Build_Natural_Transformation _ _ _ _ (fun a => comp (n_ob a) (n_ob a) (*TODO: pas la bonne fonction*))).
+Admitted.
+
+Instance functor_cat (C D: Category) : Category.
+apply (Build_Category (Functor C D) Natural_Transformation id_nat_tr (fun _ _ _ s t => comp_nat_tr s t)).
+Admitted.
 
 (* Peut être utile pour définir de petites catégories,
    par exemple pour les produits/équaliseurs via limites,
