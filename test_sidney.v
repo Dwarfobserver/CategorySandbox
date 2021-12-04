@@ -1,5 +1,5 @@
 
-Require Import Nat List Equality.
+Require Import Nat List Equality FunctionalExtensionality.
 Import ListNotations.
 
 (* +------------+
@@ -35,8 +35,9 @@ Defined.
 
 Lemma cat_op_involutive (C: Category) : op_cat (op_cat C) = C.
 unfold op_cat. destruct C. simpl. f_equal.
-(*rewrite eq_sym_involutive ?*)
-Admitted.
+repeat (apply functional_extensionality_dep ; intro).
+now rewrite eq_sym_involutive.
+Qed.
 
 (* +-----------+
    | Foncteurs |
@@ -60,6 +61,7 @@ Defined.
 
 Definition comp_functor {C D E: Category} (F: Functor C D) (G: Functor D E) : Functor C E.
 apply (Build_Functor C E (fun c => f_ob (f_ob c)) (fun _ _ f => f_hom (f_hom f))).
+(* Possible de complètement éviter les réécritures pour définir les éléments ? *)
 - intros. rewrite f_id_distr. apply f_id_distr.
 - intros. rewrite f_commute. apply f_commute.
 Defined.
@@ -67,16 +69,19 @@ Notation "f >>> g" := (comp_functor f g) (at level 40, left associativity).
 
 Lemma functor_id_r {C D: Category} (F: Functor C D) : F >>> id_functor D = F.
 unfold comp_functor, id_functor. destruct F. simpl. f_equal.
-(* Comment simplifier ou faire disparaître les eq_ind / ed_ind_r / eq_rect ? *)
-Admitted.
+- apply functional_extensionality_dep. intro. now rewrite f_id_distr0.
+- repeat (apply functional_extensionality_dep ; intro). now rewrite f_commute0.
+Qed.
 
 Lemma functor_id_l {C D: Category} (F: Functor C D) : id_functor C >>> F = F.
 unfold comp_functor, id_functor. destruct F. simpl. f_equal.
-Admitted.
+Qed.
 
 Lemma functor_comp_assoc {A B C D: Category} (F: Functor A B) (G: Functor B C) (H: Functor C D) :
     (F >>> G) >>> H = F >>> (G >>> H).
-unfold comp_functor, id_functor. simpl. f_equal.
+unfold comp_functor, id_functor. destruct F, G, H. simpl. f_equal.
+- apply functional_extensionality_dep. intro x. rewrite f_id_distr0. admit.
+- repeat (apply functional_extensionality_dep ; intro). rewrite f_commute0. (* yikes *) admit.
 Admitted.
 
 Instance category_cat : Category.
@@ -84,7 +89,7 @@ apply (Build_Category Category Functor id_functor (fun _ _ _ f g => f >>> g)) ; 
 - apply functor_id_r.
 - apply functor_id_l.
 - apply functor_comp_assoc.
-Admitted.
+Defined.
 
 (* Tentative de définition d'égalité entre 2 foncteurs *)
 
@@ -104,9 +109,9 @@ Definition eq_functor {C D: Category} (F G: Functor C D) : Prop :=
         Ff = Gf.
 
 Lemma functor_id_id_eq C : eq_functor (id_functor C) (id_functor C).
-unfold eq_functor, eq_functor_aux. simpl.
-exists (fun (x: ob) => eq_refl x).
-Admitted.
+unfold eq_functor, eq_functor_aux, eq_rect_r, eq_rect, eq_sym. simpl.
+exists (fun (x: ob) => eq_refl x). reflexivity.
+Qed.
 
 (* +----------------------------+
    | Transformations naturelles |
@@ -129,7 +134,10 @@ Defined.
 
 Instance comp_nat_tr {C D: Category} {F G H: Functor C D}
     (S: Natural_Transformation F G) (T: Natural_Transformation G H) : Natural_Transformation F H.
-apply (Build_Natural_Transformation _ _ _ _ (fun a => n_ob a >> n_ob a (*TODO: pas la bonne fonction*))).
+set (S_map := fun (a: @ob C) => @n_ob _ _ _ _ S a).
+set (T_map := fun (a: @ob C) => @n_ob _ _ _ _ T a).
+apply (Build_Natural_Transformation _ _ _ _ (fun a => (S_map a) >> (T_map a))).
+intros.
 Admitted.
 
 Instance functor_cat (C D: Category) : Category.
@@ -149,7 +157,8 @@ apply (Build_Category T eq (@eq_refl T) (@eq_trans T)).
 Defined.
 
 Lemma cat_discrete_op_id T : op_cat (discrete_cat T) = discrete_cat T.
-unfold op_cat, discrete_cat. simpl. (*f_equal ?*)
+unfold op_cat, discrete_cat. simpl.
+f_equal (*Pourquoi f_equal ne fonctionne pas ?*).
 Admitted.
 
 Instance discrete_functor {A B} (f: A -> B) : Functor (discrete_cat A) (discrete_cat B).

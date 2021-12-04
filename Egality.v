@@ -39,11 +39,3 @@ Add Parametric Relation (A : Type) : (A -> Type) (@cat_eq A)
     symmetry proved by (cat_eq_sym_aux)
     transitivity proved by (cat_eq_trans)
       as cat_eq_rel.
-
-
-    
-
-    
-
-
- 
