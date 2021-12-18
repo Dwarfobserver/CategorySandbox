@@ -20,7 +20,7 @@
 *.vo
 *.vok
 *.vos
-.CoqMakefile.conf
+CoqMakefile.conf
 .coq-native/
 .csdp.cache
 .lia.cache
