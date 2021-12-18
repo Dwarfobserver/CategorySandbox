@@ -10,7 +10,7 @@ Polymorphic Class Category := {
     comp {a b c: ob} : a~>b -> b~>c -> a~>c
                 where "f >> g" := (comp f g) ;
 
-    id_r {a b: ob} (f: a~>b) : f >> id ≃ f ;
+    id_r {a b: ob} (f: a~>b) : f >> id (*≃ does not compile*) = f ;
     id_l {a b: ob} (f: a~>b) : id >> f  = f ;
     assoc {a b c d: ob} (f: a~>b) (g: b~>c) (h: c~>d) :
         (f >> g) >> h = f >> (g >> h) ;
