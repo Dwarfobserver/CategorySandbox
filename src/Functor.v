@@ -1,4 +1,4 @@
-Require Import Category.
+Require Import Category FunctionalExtensionality.
 
 Class Functor (C D: Category) := {
     f_ob : (@ob C) -> (@ob D) ;

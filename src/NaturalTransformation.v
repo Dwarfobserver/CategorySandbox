@@ -1,3 +1,5 @@
+Require Import Category Functor FunctionalExtensionality.
+
 Class Natural_Transformation {C D: Category} (F G: Functor C D) := {
     n_ob (a: @ob C) : (@f_ob _ _ F a) ~> (@f_ob _ _ G a);
     n_commute {a b: @ob C} (f: a ~> b) :
@@ -21,7 +23,7 @@ set (Gf := @f_hom _ _ G _ _ f).
 
 (* Prouve la naturalité en passant par le chemin du milieu. *)
 
-(* Pourquoi les rewrite ne fonctionnenet plus avec une variable (comme p_half) ?
+(* Pourquoi les rewrite ne fonctionnent plus avec une variable (comme p_half) ?
 set (p_begin := Ff >> Smap b >> Tmap b).
 set (p_half  := Smap a >> Gf >> Tmap b).
 set (p_end   := Smap a >> (Tmap a >> Hf)). *)

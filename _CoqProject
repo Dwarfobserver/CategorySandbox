@@ -2,6 +2,9 @@
 -arg all
 -R src/ CategoriesLMFI
 src/Category.v
-src/Egality.v
-src/test_mathieu.v
-src/test_sidney.v
+src/Functor.v
+src/NaturalTransformation.v
+src/experimental/XCategory.v
+src/experimental/Egality.v
+src/experimental/test_mathieu.v
+src/experimental/test_sidney.v
