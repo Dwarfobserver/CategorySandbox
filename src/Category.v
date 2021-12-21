@@ -19,7 +19,7 @@ Polymorphic Class Category := {
 Notation "a ~> b" := (hom a b).
 Notation "f >> g" := (comp f g).
 
-Instance op_cat (C: Category) : Category. (* Comment pouvoir juste utiliser 'id' > *)
+Instance op_cat (C: Category) : Category.
 apply (Build_Category ob (fun a b => b ~> a) id (fun _ _ _ f g => comp g f)) ; intros.
 - apply cat_id_l.
 - apply cat_id_r.

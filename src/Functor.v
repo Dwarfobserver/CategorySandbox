@@ -17,7 +17,7 @@ Defined.
 
 Definition comp_functor {C D E: Category} (F: Functor C D) (G: Functor D E) : Functor C E.
 apply (Build_Functor C E (fun c => f_ob (f_ob c)) (fun _ _ f => f_hom (f_hom f))).
-(* Possible de complètement éviter les réécritures pour définir les éléments ? *)
+(* Applying when possible instead of rewriting to define simpler lambda-terms *)
 - intros. rewrite f_id_distr. apply f_id_distr.
 - intros. rewrite f_commute. apply f_commute.
 Defined.

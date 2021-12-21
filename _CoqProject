@@ -4,7 +4,8 @@
 src/Category.v
 src/Functor.v
 src/NaturalTransformation.v
-src/experimental/XCategory.v
+src/experimental/dependent_records.v
 src/experimental/Egality.v
 src/experimental/test_mathieu.v
 src/experimental/test_sidney.v
+src/experimental/XCategory.v
