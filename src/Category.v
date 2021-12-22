@@ -23,7 +23,7 @@ Instance op_cat (C: Category) : Category.
 apply (Build_Category ob (fun a b => b ~> a) id (fun _ _ _ f g => comp g f)) ; intros.
 - apply cat_id_l.
 - apply cat_id_r.
-- apply (eq_sym (cat_comp_assoc h g f)).
+- apply eq_sym, cat_comp_assoc.
 Defined.
 
 Lemma cat_op_involutive (C: Category) : op_cat (op_cat C) = C.
