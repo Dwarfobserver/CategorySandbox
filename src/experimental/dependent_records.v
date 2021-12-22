@@ -69,41 +69,26 @@ Definition cat_oh_of (C: Category) := Build_Cat_ObHom ob hom.
 Definition cat_data_of (C: Category) := Build_Cat_Data (cat_oh_of C) id (@comp C).
 
 Lemma eq_category (C D: Category) (e: cat_data_of C = cat_data_of D) : C = D.
-
-(* Strategies :
-  - Equate member by member with change : (x = ob, hom, id, ...)
-      assert (e_x : x = x0).
-      change x0 with (c1_x (c2_oh d)) OR (c2_x d).
-      now destruct e in d. // d = cat_data_of D
-      destruct e_x.
-    Problem : "illegal typing" when destructing e in d.
-  
-  - Equate destructured cat_datas.
-      (c = cata_data C) (c = destruct C) ...
-      ob = c_ob = d_ob = ob0
-    Very heavy, not sure it solves the problem
-
-  - Same as 1 but with 2 structures.
-*)
 set (c := cat_data_of C).
 set (d := cat_data_of D).
-(* set (e_cd := e).
+(* assert (e_cd := e).
 change (cat_data_of C) with c in e_cd ; change (cat_data_of D) with d in e_cd. *)
 destruct C, D.
 
+unfold cat_data_of, cat_oh_of in c, d, e.
+simpl in *.
+
 assert (e_ob : ob = ob0).
-assert (e_obd : c1_ob (c2_oh d) = ob0). reflexivity.
 now dependent destruction e.
 destruct e_ob.
 
 assert (e_hom : hom = hom0).
-assert (e_homd : c1_hom (c2_oh d) = hom0). reflexivity.
 now dependent destruction e.
 destruct e_hom.
 
 assert (e_id : id = id0).
-(* apply functional_extensionality_dep ; intro. *)
-assert (e_idd : c2_id d = id0). reflexivity.
+assert (e_idc : id = c2_id c). reflexivity.
+assert (e_idd : id0 = c2_id d). reflexivity.
 dependent destruction e.
 admit.
 destruct e_id.
@@ -112,6 +97,7 @@ assert (e_comp : comp = comp0).
 admit.
 destruct e_comp.
 
+(* Is transporting proofs possible ? Otherwise use UIP *)
 assert (e_id_r : cat_id_r = cat_id_r0).
 admit.
 destruct e_id_r.
