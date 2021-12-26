@@ -31,3 +31,31 @@ unfold op_cat. destruct C. simpl. f_equal.
 repeat (apply functional_extensionality_dep ; intro).
 apply eq_sym_involutive.
 Qed.
+
+(* We should be able to avoid duplicates by defining duals with op_cat *)
+
+Definition is_section    {C: Category} {a b: ob} (f: a ~> b) (g: b ~> a) := g >> f = id b.
+Definition is_retraction {C: Category} {a b: ob} (f: a ~> b) (g: b ~> a) := f >> g = id a.
+Definition is_inverse    {C: Category} {a b: ob} (f: a ~> b) (g: b ~> a) := is_section f g /\ is_retraction f g.
+
+Definition is_mono {C: Category} {a b: ob} (f: a ~> b) :=
+    forall (x: ob) (g g': x ~> a), (g >> f = g' >> f) -> (g = g').
+
+Definition is_epi {C: Category} {a b: ob} (f: a ~> b) :=
+    forall (x: ob) (g g': b ~> x), (f >> g = f >> g') -> (g = g').
+
+Definition retraction_implies_mono {C: Category} {a b: ob} (f: a ~> b) (g: b ~> a) : is_retraction f g -> is_mono f.
+unfold is_retraction, is_mono.
+intros e_fg x h h' e_hf.
+assert (hfg : h >> f >> g = h' >> f >> g).
+now rewrite e_hf.
+now rewrite !cat_comp_assoc, e_fg, !cat_id_r in hfg.
+Qed.
+
+Definition section_implies_epi {C: Category} {a b: ob} (f: a ~> b) (g: b ~> a) : is_section f g -> is_epi f.
+unfold is_section, is_epi.
+intros e_gh x h h' e_fh.
+assert (hfg : g >> (f >> h) = g >> (f >> h')).
+now rewrite e_fh.
+now rewrite <-!cat_comp_assoc, e_gh, !cat_id_l in hfg.
+Qed.

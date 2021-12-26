@@ -64,4 +64,4 @@ apply (Build_Category (Functor C D) Natural_Transformation id_nat_tr (fun _ _ _ 
 - intros. apply nat_tr_id_r.
 - intros. apply nat_tr_id_l.
 - intros. apply nat_tr_comp_assoc.
-Admitted.
+Defined.
