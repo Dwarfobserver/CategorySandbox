@@ -34,16 +34,8 @@ Definition Ens : Category := {|
     cat_comp_assoc := @comp_assoc;
 |}.
 
-<<<<<<< HEAD
 (*Definition hom_cov {C : Category} (a : [C]) : C → Ens := {|
     f_ob := fun x => a ~> x ;
     f_hom {a b: [C]} (f: a ~> b) := f_ob a ~> f_ob b ;
 |}.
 *)
-=======
-Definition hom_cov {C : Category} (a : [C]) : C → Ens := {|
-    f_ob := fun x => a ~> x ;
-    f_hom {a b: [C]} (f: a ~> b) := f_ob a ~> f_ob b ;
-|}.
-
->>>>>>> e126198f2d702176aee73fa513f9c338ef699493
