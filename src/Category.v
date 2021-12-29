@@ -28,7 +28,9 @@ apply (Build_Category ob (fun a b => b ~> a) id (fun _ _ _ f g => comp g f)) ; i
 - apply eq_sym, cat_comp_assoc.
 Defined.
 
-Lemma cat_op_involutive (C: Category) : op_cat (op_cat C) = C.
+Notation "C ^op" := (op_cat C) (at level 9, no associativity).
+
+Lemma cat_op_involutive (C: Category) : (C^op)^op = C.
 unfold op_cat. destruct C. simpl. f_equal.
 repeat (apply functional_extensionality_dep ; intro).
 apply eq_sym_involutive.
@@ -115,7 +117,3 @@ Proof.
 intros. destruct H, H0. 
 now rewrite <- cat_id_r, <- H, <- cat_comp_assoc, H2, cat_id_l.
 Qed.
-<<<<<<< HEAD
-=======
-
->>>>>>> 40797a1e4c39f05d70f4b0ed1a0e73fbbfa8172d
