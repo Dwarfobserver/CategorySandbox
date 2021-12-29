@@ -41,3 +41,35 @@ unfold comp_functor, id_functor. destruct F, G, H. simpl. f_equal.
 - repeat (apply functional_extensionality_dep ; intro). unfold eq_ind_r, eq_ind, eq_sym.
   now rewrite f_commute0, f_commute1.
 Qed.
+
+
+Definition is_faithful {C D: Category} (F: Functor C D) := 
+  forall (c c' : @ob C) (f g : c ~> c'), f_hom f = f_hom g -> f = g.
+
+Definition is_full {C D: Category} (F: Functor C D) :=
+  forall (c c' : @ob C) (g : f_ob c ~> f_ob c'), exists f : c ~> c', f_hom f = g.
+  
+Definition is_fully_faithful {C D: Category} (F: Functor C D) :=
+  is_full F /\ is_faithful F.
+
+Lemma functor_preserves_iso {C D: Category} (F: Functor C D) :
+  forall (c c' : @ob C) (f : c ~> c'), is_iso f -> is_iso (f_hom f).
+Proof.
+intros. unfold is_iso in *. destruct H as [f']. exists (f_hom f'). destruct H. split.
+  - now rewrite <- f_commute, H, f_id_distr.
+  - now rewrite <- f_commute, H0, f_id_distr.
+Qed.
+
+Lemma fully_faithful_injective_on_object {C D: Category} (F: Functor C D) (fully_faith_F : is_fully_faithful F):
+  forall c c' : @ob C, f_ob c ≃ f_ob c' -> c ≃ c'.
+Proof.
+intros. destruct H as [f]. destruct fully_faith_F.
+destruct (H0 c c' f) as [g]. exists g. destruct H as [f']. destruct (H0 c' c f') as [g']. 
+exists g'. rewrite <- !H2, <- !H3, <- !f_commute, <- !f_id_distr in H. split; apply H1; easy.
+Qed.
+
+
+
+
+
+

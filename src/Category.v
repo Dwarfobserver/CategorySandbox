@@ -5,6 +5,7 @@ Require Import FunctionalExtensionality.
 *)
 Reserved Notation "a ~> b" (at level 90, right associativity).
 Reserved Notation "f >> g" (at level 40, left associativity).
+Reserved Notation "a ≃ b" (at level 90, right associativity).
 
 Polymorphic Class Category := {
     ob : Type;
@@ -44,7 +45,11 @@ Definition is_mono {C: Category} {a b: ob} (f: a ~> b) :=
 Definition is_epi {C: Category} {a b: ob} (f: a ~> b) :=
     forall (x: ob) (g g': b ~> x), (f >> g = f >> g') -> (g = g').
 
-Definition retraction_implies_mono {C: Category} {a b: ob} (f: a ~> b) (g: b ~> a) : is_retraction f g -> is_mono f.
+Definition is_iso {C: Category} {a b: ob} (f: a ~> b) := 
+    exists g : b ~> a, (f >> g = id a) /\ (g >> f = id b).
+
+Lemma retraction_implies_mono {C: Category} {a b: ob} (f: a ~> b) (g: b ~> a) : is_retraction f g -> is_mono f.
+Proof.
 unfold is_retraction, is_mono.
 intros e_fg x h h' e_hf.
 assert (hfg : h >> f >> g = h' >> f >> g).
@@ -52,10 +57,51 @@ now rewrite e_hf.
 now rewrite !cat_comp_assoc, e_fg, !cat_id_r in hfg.
 Qed.
 
-Definition section_implies_epi {C: Category} {a b: ob} (f: a ~> b) (g: b ~> a) : is_section f g -> is_epi f.
+Lemma section_implies_epi {C: Category} {a b: ob} (f: a ~> b) (g: b ~> a) : is_section f g -> is_epi f.
+Proof.
 unfold is_section, is_epi.
 intros e_gh x h h' e_fh.
 assert (hfg : g >> (f >> h) = g >> (f >> h')).
 now rewrite e_fh.
 now rewrite <-!cat_comp_assoc, e_gh, !cat_id_l in hfg.
+Qed.
+
+Lemma iso_to_mono {C: Category} {a b: ob} (f: a ~> b) (h : is_iso f) : is_mono f.
+Proof.
+unfold is_mono. intros. destruct h as [f']. destruct H0.
+now rewrite <- cat_id_r, <- (cat_id_r g), <- H0, <- cat_comp_assoc, H, cat_comp_assoc.
+Qed.
+
+Lemma iso_to_epi {C: Category} {a b: ob} (f: a ~> b) (h : is_iso f) : is_epi f.
+Proof. 
+unfold is_epi. intros. destruct h as [f']. destruct H0.
+now rewrite <- cat_id_l, <- (cat_id_l g), <- H1, cat_comp_assoc, H, <- cat_comp_assoc.
+Qed.
+
+Lemma comp_iso_is_iso {C: Category} {a b c : ob} (f: a ~> b) (g : b ~> c) (iso_f : is_iso f) (iso_g : is_iso g) :
+    is_iso (f >> g).
+Proof.
+destruct iso_f as [f']. destruct iso_g as [g']. exists (g' >> f'). destruct H, H0.
+rewrite cat_comp_assoc, cat_comp_assoc, <- (cat_comp_assoc _ g' _), <- (cat_comp_assoc _ f _), H0, H1.
+now rewrite !cat_id_l, H, H2.
+Qed.
+
+Definition ob_isom {C: Category} (a b: ob) := exists g : a ~> b, is_iso g.
+Notation "a ≃ b" := (ob_isom a b) (at level 90, right associativity).
+
+Lemma isom_sym {C: Category} (a b: ob) : a ≃ b -> b ≃ a.
+Proof.
+intro. destruct H as [f]. destruct H as [f']. exists f'. unfold is_iso. exists f. easy.
+Qed.
+
+Lemma iso_refl {C: Category} (a : ob) : a ≃ a.
+Proof.
+exists (id a). unfold is_iso. exists (id a). 
+now rewrite !cat_id_l.
+Qed.
+
+Lemma iso_trans {C: Category} (a b c : ob) : a ≃ b -> b ≃ c -> a ≃ c.
+Proof.
+intros. destruct H as [f], H0 as [g]. exists (f >> g). 
+now apply comp_iso_is_iso.
 Qed.
