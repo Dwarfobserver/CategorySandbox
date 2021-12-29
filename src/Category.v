@@ -115,5 +115,4 @@ Proof.
 intros. destruct H, H0. 
 now rewrite <- cat_id_r, <- H, <- cat_comp_assoc, H2, cat_id_l.
 Qed.
-=======
->>>>>>> 71aa829eeca9039117acb2dc999a2b6d707bbd34
+
