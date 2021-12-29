@@ -9,8 +9,10 @@ Class Transform {C D : Category} {F G : C → D} := {
 }.
 
 Notation "F ⥰ G" := (@Transform _ _ F G) (at level 90, right associativity).
-Notation "tf[ t ]" := (@transform _ _ _ _) (at level 9, format "tf[ t ]").
-Notation "nat[ t ]" := (@naturality _ _ _ _ _ _) (at level 9, format "nat[ t ]").
+Notation "tf[ t ]" := (@transform _ _ _ _ t) (at level 9, format "tf[ t ]").
+Notation "nat[ t ]" := (@naturality _ _ _ _ _ _ t) (at level 9, format "nat[ t ]").
+
+Coercion transform : Transform >-> Funclass.
 
 
 Lemma compose_naturality {C D : Category} {F G H : C → D} {s : F ⥰ G} {t : G ⥰ H} {a b : [C]} (f : a ~> b) :
@@ -45,6 +47,7 @@ assert (tf[t] = fun x : [C] => hom[F] (id x) >> transform x).
 - apply functional_extensionality_dep. intro. now rewrite f_id_distr, cat_id_l.
 - Admitted.
 
+
 Lemma id_transform_id_r {C D : Category} {F G : C → D} (t : F ⥰ G) : t # id_nat[G] = t.
 Proof.
 unfold id_transform. unfold compose_transform. simpl.
@@ -55,3 +58,17 @@ assert (tf[t] = fun x : [C] => transform x >> hom[G] (id x)).
 Lemma transform_comp_assoc {C D: Category} {F G H I: Functor C D} (R : F ⥰ G) (S : G ⥰ H) (T : H ⥰ I) :
     (R # S) # T = R # (S # T).
 Admitted.
+
+Definition functor_category (C D : Category) : Category := {|
+    ob := C → D;
+    hom F G := F ⥰ G;
+    id F := id_nat[F];
+    comp := fun _ _ _ s t => s # t;
+
+    cat_id_r := @id_transform_id_r C D;
+    cat_id_l := @id_transform_id_l C D;
+    cat_comp_assoc := @transform_comp_assoc C D;
+|}.
+
+Notation "[ C , D ]" := (functor_category C D).
+

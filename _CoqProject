@@ -3,7 +3,7 @@
 -R src/ CategoriesLMFI
 src/Category.v
 src/Functor.v
-src/NaturalTransformation.v
+src/Transform.v
 src/experimental/dependent_records.v
 src/experimental/Egality.v
 src/experimental/test_mathieu.v
