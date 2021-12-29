@@ -32,19 +32,19 @@ rewrite<- cat_comp_assoc.
 f_equal.
 apply Scommute.
 
-assert (H1 : Smap a >> Gf >> Tmap b   = Smap a >> Tmap a >> Hf).
+assert (H1 : Smap a >> Gf >> Tmap b   = Smap a >> Tmap a >> Hf). 
 rewrite! cat_comp_assoc.
 f_equal.
 apply Tcommute.
 
 apply (eq_trans H0 H1).
 Defined.
-Notation "s >>>> t" := (comp_nat_tr s t) (at level 40, left associativity). (* Moche ... *)
+Notation "s # t" := (comp_nat_tr s t) (at level 40, left associativity). 
 
-Lemma nat_tr_id_r {C D: Category} {F G: Functor C D} (S: Natural_Transformation F G) : S >>>> id_nat_tr G = S.
+Lemma nat_tr_id_r {C D: Category} {F G: Functor C D} (S: Natural_Transformation F G) : S # id_nat_tr G = S.
 Admitted.
 
-Lemma nat_tr_id_l {C D: Category} {F G: Functor C D} (S: Natural_Transformation F G) : id_nat_tr F >>>> S = S.
+Lemma nat_tr_id_l {C D: Category} {F G: Functor C D} (S: Natural_Transformation F G) : id_nat_tr F # S = S.
 unfold id_nat_tr. destruct S. simpl.
 
 assert (n_ob0 = fun a : ob => id (f_ob a) >> n_ob0 a).
@@ -56,7 +56,7 @@ Admitted.
 
 Lemma nat_tr_comp_assoc {C D: Category} {F G H I: Functor C D}
     (R: Natural_Transformation F G) (S: Natural_Transformation G H) (T: Natural_Transformation H I) :
-    (R >>>> S) >>>> T = R >>>> (S >>>> T).
+    (R # S) # T = R # (S # T).
 Admitted.
 
 Instance functor_cat (C D: Category) : Category.

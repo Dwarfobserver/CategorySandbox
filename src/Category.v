@@ -19,6 +19,7 @@ Polymorphic Class Category := {
 }.
 Notation "a ~> b" := (hom a b).
 Notation "f >> g" := (comp f g).
+Notation "[ C ]" := (@ob C) (at level 90, no associativity).
 
 Instance op_cat (C: Category) : Category.
 apply (Build_Category ob (fun a b => b ~> a) id (fun _ _ _ f g => comp g f)) ; intros.
@@ -105,7 +106,6 @@ Proof.
 intros. destruct H as [f], H0 as [g]. exists (f >> g). 
 now apply comp_iso_is_iso.
 Qed.
-<<<<<<< HEAD
 
 Definition is_inv {C: Category} {a b: ob} (f: a ~> b) (g : b ~> a ):= f >> g = id a /\ g >> f = id b.
 
@@ -115,5 +115,3 @@ Proof.
 intros. destruct H, H0. 
 now rewrite <- cat_id_r, <- H, <- cat_comp_assoc, H2, cat_id_l.
 Qed.
-=======
->>>>>>> 71aa829eeca9039117acb2dc999a2b6d707bbd34
