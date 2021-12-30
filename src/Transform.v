@@ -67,7 +67,7 @@ Lemma transform_comp_assoc {C D: Category} {F G H I: Functor C D} (R : F ⥰ G) 
 Proof.
 apply simpl_eq_transform.
 unfold compose_transform. simpl.
-apply functional_extensionality_dep. intro.
+apply functional_extensionality_dep. intro. now rewrite cat_comp_assoc.
 Qed.
 
 Definition functor_category (C D : Category) : Category := {|
@@ -82,4 +82,3 @@ Definition functor_category (C D : Category) : Category := {|
 |}.
 
 Notation "[ C , D ]" := (functor_category C D).
-
