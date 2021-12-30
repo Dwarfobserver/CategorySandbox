@@ -14,6 +14,10 @@ Files need to be built to be opened in the IDE (with `Require Import XYZ`).
 
 \* Only 'CoqMakefile.conf' is not removed despite being generated, but I don't want to touch the make rules since they are in 'CoqMakefile', which is a generated file as well. So I just put it in the .gitignore file.
 
+Additional axioms :
+ - Functional extentionality
+ - Proof irrelevance (used for equalities)
+
 Notations : 
 
     Category
