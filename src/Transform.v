@@ -14,7 +14,7 @@ Notation "nat[ t ]" := (@naturality _ _ _ _ _ _ t) (at level 9, format "nat[ t ]
 
 Coercion transform : Transform >-> Funclass.
 
-Lemma simpl_eq_transform {C D: Category} {F G: C → D} (S T: F ⇒ G) :
+Lemma transform_simpl_eq {C D: Category} {F G: C → D} (S T: F ⇒ G) :
     tf[S] = tf[T] -> S = T.
 destruct S, T. simpl.
 intro eT. dependent destruction eT.
@@ -50,14 +50,14 @@ Notation "id_nat[ F ]" := (@id_transform _ _ F) (at level 9, format "id_nat[ F ]
 
 Lemma id_transform_id_l {C D : Category} {F G : C → D} (t : F ⇒ G) : id_nat[F] # t = t.
 Proof.
-apply simpl_eq_transform.
+apply transform_simpl_eq.
 unfold id_transform, compose_transform. simpl.
 apply functional_extensionality_dep. intro. now rewrite f_id_distr, cat_id_l.
 Qed.
 
 Lemma id_transform_id_r {C D : Category} {F G : C → D} (t : F ⇒ G) : t # id_nat[G] = t.
 Proof.
-apply simpl_eq_transform.
+apply transform_simpl_eq.
 unfold id_transform, compose_transform. simpl.
 apply functional_extensionality_dep. intro. now rewrite f_id_distr, cat_id_r.
 Qed.
@@ -65,7 +65,7 @@ Qed.
 Lemma transform_comp_assoc {C D: Category} {F G H I: Functor C D} (R : F ⇒ G) (S : G ⇒ H) (T : H ⇒ I) :
     (R # S) # T = R # (S # T).
 Proof.
-apply simpl_eq_transform.
+apply transform_simpl_eq.
 unfold compose_transform. simpl.
 apply functional_extensionality_dep. intro. now rewrite cat_comp_assoc.
 Qed.

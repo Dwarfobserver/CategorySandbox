@@ -1,4 +1,4 @@
-Require Import Category FunctionalExtensionality.
+Require Import Category FunctionalExtensionality Equality ProofIrrelevance.
 
 Class Functor (C D: Category) := {
     f_ob : [C] -> [D] ;
@@ -9,10 +9,37 @@ Class Functor (C D: Category) := {
         f_hom (f >> g) = (f_hom f) >> (f_hom g) ;
 }.
 
-
 Notation "C → D" := (Functor C D) (at level 90, right associativity).
 Notation "ob[ F ]" := (@f_ob _ _ F) (at level 9, format "ob[ F ]").
 Notation "hom[ F ]" := (@f_hom _ _ F _ _) (at level 9, format "hom[ F ]").
+
+Record FunctorData (C D: Category) := {
+  fdata_ob : [C] -> [D] ;
+  fdata_hom {a b: [C]} (f: a ~> b) : fdata_ob a ~> fdata_ob b ;
+}.
+Definition functor_data_of {C D: Category} (F: C → D) := Build_FunctorData C D (@f_ob _ _ F) (@f_hom _ _ F).
+
+Lemma functor_simpl_eq {C D: Category} (F G: C → D) :
+  (functor_data_of F = functor_data_of G) -> F = G.
+set (f := functor_data_of F).
+set (g := functor_data_of G).
+intro e. destruct F, G.
+unfold functor_data_of, f_ob, f_hom in *. simpl. 
+
+assert (e_ob : f_ob0 = f_ob1).
+now dependent destruction e. destruct e_ob.
+ 
+assert (e_hom : f_hom0 = f_hom1).
+now dependent destruction e. destruct e_hom.
+
+assert (e_dis: f_id_distr0 = f_id_distr1).
+apply proof_irrelevance. destruct e_dis.
+
+assert (e_comm: f_commute0 = f_commute1).
+apply proof_irrelevance. destruct e_comm.
+
+reflexivity.
+Qed.
 
 Instance id_functor (C: Category) : Functor C C.
 apply (Build_Functor C C (fun x => x) (fun _ _ f => f)).
@@ -52,7 +79,7 @@ Definition is_faithful {C D: Category} (F: Functor C D) :=
 
 Definition is_full {C D: Category} (F: Functor C D) :=
   forall (c c' : [C]) (g : f_ob c ~> f_ob c'), exists f : c ~> c', f_hom f = g.
-  
+
 Definition is_fully_faithful {C D: Category} (F: Functor C D) :=
   is_full F /\ is_faithful F.
 
