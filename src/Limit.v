@@ -41,6 +41,6 @@ Qed.
 Lemma terminals_are_isom {C : Category} (a b : [C]) :
     is_terminal a -> is_terminal b -> a ≃ b.
 Proof.
-rewrite !terminal_iff_initial_op. intros. rewrite <- op_isom_iff_isom. now apply initials_are_isom.
+rewrite !terminal_iff_initial_op, <- op_isom_iff_isom. now apply initials_are_isom.
 Qed.
 
