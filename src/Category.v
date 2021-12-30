@@ -117,3 +117,9 @@ Proof.
 intros. destruct H, H0. 
 now rewrite <- cat_id_r, <- H, <- cat_comp_assoc, H2, cat_id_l.
 Qed.
+
+Lemma op_isom_iff_isom {C: Category} (a b: [C]) :
+    @ob_isom C^op a b <-> a ≃ b.
+Proof.
+split; intro; destruct H as [f]; destruct H as [f']; exists f'; unfold is_iso; exists f; easy.
+Qed. 
