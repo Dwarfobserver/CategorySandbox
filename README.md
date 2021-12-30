@@ -31,7 +31,7 @@ Notations :
         "hom[ F ]" := (@f_hom _ _ F _ _) 
 
     Transform
-        "F ⥰ G" := (@Transform _ _ F G) \impl
+        "F ⇒ G" := (@Transform _ _ F G) \impl
         "tf[ t ]" := (@transform _ _ _ _ t) 
         "nat[ t ]" := (@naturality _ _ _ _ _ _ t) 
         "s # t" := (compose_transform s t) 

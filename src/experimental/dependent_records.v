@@ -1,5 +1,5 @@
 
-Require Import Category Functor FunctionalExtensionality Program.Equality.
+Require Import Category Functor FunctionalExtensionality Program.Equality ProofIrrelevance.
 
 (* This file aims to experiment & simplify proofs about equality of dependent records *)
 
@@ -68,9 +68,10 @@ Qed.
 Definition cat_oh_of (C: Category) := Build_Cat_ObHom ob hom.
 Definition cat_data_of (C: Category) := Build_Cat_Data (cat_oh_of C) id (@comp C).
 
-Lemma eq_category (C D: Category) (e: cat_data_of C = cat_data_of D) : C = D.
+Lemma eq_category (C D: Category) : cat_data_of C = cat_data_of D -> C = D.
 set (c := cat_data_of C).
 set (d := cat_data_of D).
+intro e.
 (* assert (e_cd := e).
 change (cat_data_of C) with c in e_cd ; change (cat_data_of D) with d in e_cd. *)
 destruct C, D.
@@ -99,16 +100,13 @@ destruct e_comp.
 
 (* Is transporting proofs possible ? Otherwise use UIP *)
 assert (e_id_r : cat_id_r = cat_id_r0).
-admit.
-destruct e_id_r.
+apply proof_irrelevance. destruct e_id_r.
 
 assert (e_id_l : cat_id_l = cat_id_l0).
-admit.
-destruct e_id_l.
+apply proof_irrelevance. destruct e_id_l.
 
 assert (e_assoc : cat_comp_assoc = cat_comp_assoc0).
-admit.
-destruct e_assoc.
+apply proof_irrelevance. destruct e_assoc.
 
 reflexivity.
 Admitted.
