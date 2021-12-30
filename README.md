@@ -15,10 +15,11 @@ Files need to be built to be opened in the IDE (with `Require Import XYZ`).
 \* Only 'CoqMakefile.conf' is not removed despite being generated, but I don't want to touch the make rules since they are in 'CoqMakefile', which is a generated file as well. So I just put it in the .gitignore file.
 
 Notations : 
+
     Category
-        "a ~> b" := (hom a b).
-        "f >> g" := (comp f g).
-        "[ C ]" := (@ob C) (at level 90, no associativity).
+        "a ~> b" := (hom a b)
+        "f >> g" := (comp f g)
+        "[ C ]" := (@ob C)
 
     Functor
         "C → D" := (Functor C D) \to
