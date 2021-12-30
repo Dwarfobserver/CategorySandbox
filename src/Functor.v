@@ -72,6 +72,23 @@ destruct (H0 c c' f) as [g]. exists g. destruct H as [f']. destruct (H0 c' c f')
 exists g'. rewrite <- !H2, <- !H3, <- !f_commute, <- !f_id_distr in H. split; apply H1; easy.
 Qed.
 
+Lemma constant_functor_commute (C : Category) (c : [C]): id c = id c >> id c.
+Proof.
+  now rewrite cat_id_l.
+Qed.
+
+Definition constant_functor {I C : Category} (c : [C]) : I → C := {| 
+  f_ob := fun _ => c;
+  f_hom := fun _ _ _ => id c;
+
+  f_id_distr := fun _ => eq_refl;
+  f_commute := fun _ _ _ _ _ => constant_functor_commute C c;
+|}.
+
+Notation "Δ[ c ]" := (@constant_functor _ _ c) (at level 9).
+
+
+
 
 
 
