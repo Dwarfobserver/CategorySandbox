@@ -87,7 +87,18 @@ Definition constant_functor {I C : Category} (c : [C]) : I → C := {|
 
 Notation "Δ[ c ]" := (@constant_functor _ _ c) (at level 9).
 
+(* trivial but useful lemma *)
+Lemma functor_comp_commute_ob {C D E : Category} (F : C → D) (G : D → E) (c : [C]):
+  ob[F >>> G] c = ob[G] (ob[F] c).
+Proof.
+  reflexivity.
+Qed.
 
+Lemma functor_comp_commute_mph {C D E : Category} (F : C → D) (G : D → E) (a b : [C]) (f : a ~> b) :
+  hom[F >>> G] f = hom[G] (hom[F] f).
+Proof.
+  reflexivity.
+Qed.
 
 
 

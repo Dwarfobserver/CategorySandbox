@@ -5,6 +5,8 @@ src/Category.v
 src/Functor.v
 src/Transform.v
 src/Limit.v
+src/Cone.v
+src/Comma.v
 src/Yoneda.v
 src/experimental/dependent_records.v
 src/experimental/Egality.v

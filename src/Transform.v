@@ -81,4 +81,13 @@ Definition functor_category (C D : Category) : Category := {|
     cat_comp_assoc := @transform_comp_assoc C D;
 |}.
 
-Notation "[ C , D ]" := (functor_category C D).
+Notation "[ C , D ]" := (functor_category C D). 
+
+(*
+Program Definition functor_transform {C D E : Category} {G H : D → E} (F : C → D) (t : G ⇒ H) : F >>> G ⇒ F >>> H := {|
+    transform (x : [C]) := tf[t] (ob[F] x);
+|}.
+Next Obligation. 
+
+rewrite <- !functor_comp_commute_mph.
+*)
