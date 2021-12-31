@@ -1,5 +1,5 @@
-Require Import Category Functor Transform.
-Require Import FunctionalExtensionality.
+Require Import Category Functor Transform Limit.
+Require Import FunctionalExtensionality ProofIrrelevance.
 Class cone {I C : Category} (D : I → C) := {
     base : [C];
     tf : Δ[base] ⥰ D;
@@ -32,7 +32,7 @@ Next Obligation.
 now rewrite cat_comp_assoc, (commute[δ', δ''] i), (commute[δ, δ'] i).
 Defined.
 
-Program Definition cone_cat {I C : Category} (D : I → C) : Category := {|
+Program Definition cone_cat {I C : Category} {D : I → C} : Category := {|
     ob := cone D;
     hom := cone_hom;
 
@@ -40,7 +40,25 @@ Program Definition cone_cat {I C : Category} (D : I → C) : Category := {|
     comp := comp_cone_mph;
 |}.
 Next Obligation.
-unfold comp_cone_mph. simpl. 
+unfold comp_cone_mph. Admitted.
+Next Obligation.
+Admitted.
+Next Obligation.
+Admitted.
+
+Notation "Δ[ D ]" := (@cone_cat _ _ D) (at level 9).
+
+Definition is_limit {I C : Category} {D : I → C} (δ : [Δ[D]]) := @is_terminal Δ[D] δ.
+
+Lemma limits_are_isom {I C : Category} (D : I → C) (δ δ' : [Δ[D]]) :
+    is_limit δ -> is_limit δ' -> δ ≃ δ'.
+Proof.
+apply terminals_are_isom.
+Qed.
+
+
+    
+
 
 
 
