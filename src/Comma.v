@@ -28,8 +28,8 @@ Next Obligation.
 now rewrite !f_id_distr, cat_id_l, cat_id_r.
 Qed.
 
-Program Definition comp_comma_mph {A B C : Category} (S : A → C) (T : B → C) ():= .
+Program Definition comp_comma_mph {A B C : Category} (S : A → C) (T : B → C) : True.
+Admitted.
 
-Definition comma_cat {A B C : Category} (S : A → C) (T : B → C) : Category := {|
-    ob := ()
-|}.
+Definition comma_cat {A B C : Category} (S : A → C) (T : B → C) : Category.
+Admitted.

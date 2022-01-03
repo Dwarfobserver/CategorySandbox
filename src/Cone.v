@@ -2,7 +2,7 @@ Require Import Category Functor Transform Limit.
 Require Import FunctionalExtensionality ProofIrrelevance.
 Class cone {I C : Category} (D : I → C) := {
     base : [C];
-    tf : Δ[base] ⥰ D;
+    tf : Δ[base] ⇒ D;
 }.
 
 Notation "base[ d ]" := (@base _ _ _ d) (at level 9).

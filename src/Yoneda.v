@@ -34,11 +34,12 @@ Definition Ens : Category := {|
     cat_id_l := @id_l;
     cat_comp_assoc := @comp_assoc;
 |}.
-Print hom_.
 (*
-Definition hom_cov {C : Category} (a : [C]) : C → Ens := {|
+Definition hom_cov {C : Category} (a : [C]) : C → Ens.
+
+
+x:= {|
     f_ob := fun x => a ~> x ;
     f_hom {a b: [C]} (f: a ~> b) := f_ob a ~> f_ob b ;
 |}.
-
 *)
