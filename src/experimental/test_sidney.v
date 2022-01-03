@@ -1,5 +1,5 @@
 
-Require Import Category Functor dependent_records FunctionalExtensionality Setoid.
+Require Import Category Functor Transform FunctionalExtensionality Setoid Equality ProofIrrelevance.
 
 (* +----------------+
    | Slice category |
@@ -17,8 +17,17 @@ Record slice_ob {C: Category} (c: ob) := {
 
 Record slice_hom {C: Category} (c: ob) (a b: slice_ob c) := {
     arr : src a ~> src b ;
-    commute : hom a = arr >> hom b;
+    commute : hom a = arr >> hom b ;
 }.
+
+Lemma slice_hom_simpl_eq {C: Category} {c: ob} {x y: slice_ob c} (f g: slice_hom x y) :
+    arr f = arr g -> f = g.
+destruct f, g. simpl.
+intro eA. dependent destruction eA.
+assert (eC: commute0 = commute1).
+apply proof_irrelevance.
+now destruct eC.
+Qed.
 
 Definition slice_id {C: Category} (c: ob) (a: slice_ob c) : slice_hom a a.
 apply (Build_slice_hom _ _ (id (src a))).
@@ -35,22 +44,19 @@ Defined.
 
 Lemma slice_id_r {C: Category} {c: ob} {a b: slice_ob c} (f: slice_hom a b) :
     slice_comp f (slice_id b) = f.
-unfold slice_id, slice_comp. simpl.
-
-assert (e_arr : arr f >> id (src b) = arr f).
-apply cat_id_r.
-(* rewrite e_arr => coerce type stuff :( *)
-
-Admitted.
+apply slice_hom_simpl_eq. simpl. apply cat_id_r.
+Defined.
 
 Lemma slice_id_l {C: Category} {c: ob} {a b: slice_ob c} (f: slice_hom a b) :
     slice_comp (slice_id a) f = f.
-Admitted.
+apply slice_hom_simpl_eq. simpl. apply cat_id_l.
+Defined.
 
 Lemma slice_comp_assoc {C: Category} {c: ob} {x y z w: slice_ob c}
     (f: slice_hom x y) (g: slice_hom y z) (h: slice_hom z w) :
     slice_comp (slice_comp f g) h = slice_comp f (slice_comp g h).
-Admitted.
+apply slice_hom_simpl_eq. simpl. apply cat_comp_assoc.
+Defined.
 
 Instance slice_cat {C: Category} (c: ob) : Category.
 apply (Build_Category (slice_ob c) (@slice_hom C c) (@slice_id C c) (@slice_comp C c)) ; intros.
@@ -63,6 +69,20 @@ Instance coslice_cat {C: Category} (c: ob) : Category := op_cat (slice_cat c).
 (* Can prove theorems to simplify computation of under / coslice category. *)
 
 End Slice.
+
+Notation "c ↓ C" := (@Slice.slice_cat C c) (at level 14, format "c ↓ C").
+Notation "c ↑ C" := (@Slice.coslice_cat C c) (at level 14, format "c ↑ C").
+
+(* +-----------+
+   | Test cone |
+   +-----------+
+*)
+
+Definition const_ffunct {A: Category} {I: Category} (a: [A]) : I → A := Δ[a].
+
+Definition Cone {I C: Category} (D: I → C) (c: [C]) : Δ[c] ⇒ D.
+
+Definition Cone_cat {I C: Category} (D: I → C) := constant_functor ⇒ D.
 
 (* +--------------------+
    | Discrete instances |

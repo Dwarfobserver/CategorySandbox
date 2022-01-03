@@ -40,7 +40,9 @@ Program Definition cone_cat {I C : Category} {D : I → C} : Category := {|
     comp := comp_cone_mph;
 |}.
 Next Obligation.
-unfold comp_cone_mph. Admitted.
+unfold comp_cone_mph.
+
+Admitted.
 Next Obligation.
 Admitted.
 Next Obligation.
