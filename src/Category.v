@@ -7,7 +7,7 @@ Reserved Notation "a ~> b" (at level 90, right associativity).
 Reserved Notation "f >> g" (at level 40, left associativity).
 Reserved Notation "a ≃ b" (at level 90, right associativity).
 
-Polymorphic Class Category := {
+Cumulative Polymorphic Class Category := {
     ob : Type;
     hom : ob -> ob -> Type where "a ~> b" := (hom a b);
     id (a: ob) : a~>a;
@@ -35,6 +35,13 @@ unfold op_cat. destruct C. simpl. f_equal.
 repeat (apply functional_extensionality_dep ; intro).
 apply eq_sym_involutive.
 Qed.
+
+Instance unit_cat : Category.
+apply (Build_Category unit (fun _ _ => unit) (fun x => x) (fun _ _ _ _ _ => tt))
+  ; intros ; induction f ; trivial.
+Defined.
+
+Notation "'*" := unit_cat (at level 5, no associativity).
 
 (* We should be able to avoid duplicates by defining duals with op_cat *)
 
@@ -122,4 +129,4 @@ Lemma op_isom_iff_isom {C: Category} (a b: [C]) :
     @ob_isom C^op a b <-> a ≃ b.
 Proof.
 split; intro; destruct H as [f]; destruct H as [f']; exists f'; unfold is_iso; exists f; easy.
-Qed. 
+Qed.

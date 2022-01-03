@@ -70,9 +70,12 @@ Qed.
 
 End Comma.
 
-Definition comma_cat {A B C : Category} (S : A → C) (T : B → C) : Category.
+Definition comma_cat {A B C: Category} (S: A → C) (T: B → C) : Category.
 apply (Build_Category (Comma.comma_ob S T) Comma.comma_mph (fun x => Comma.comma_id x) (fun _ _ _ x y => Comma.comma_comp x y)) ; intros.
 - apply Comma.comma_id_r.
 - apply Comma.comma_id_l.
 - apply Comma.comma_comp_assoc.
 Defined.
+
+(* Need shortcuts to be really usable *)
+Definition cone_cat {I C: Category} (D: I → C) := comma_cat (unit_curry D) delta_functor.

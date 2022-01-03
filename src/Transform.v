@@ -70,7 +70,7 @@ unfold compose_transform. simpl.
 apply functional_extensionality_dep. intro. now rewrite cat_comp_assoc.
 Qed.
 
-Definition functor_category (C D : Category) : Category := {|
+Definition functor_category (C D: Category) : Category := {|
     ob := C → D;
     hom F G := F ⇒ G;
     id F := id_nat[F];
@@ -81,7 +81,43 @@ Definition functor_category (C D : Category) : Category := {|
     cat_comp_assoc := @transform_comp_assoc C D;
 |}.
 
-Notation "[ C , D ]" := (functor_category C D). 
+Notation "[ C , D ]" := (functor_category C D).
+
+(* Morally f, with boilerplate to assign it the needed (less simplified) type *)
+Definition constant_transform_tf {C D: Category} {a b: [D]} (f: a~>b) (x: [C]) : ob[Δ[a]] x ~> ob[Δ[b]] x := f.
+
+Definition constant_transform_nat {C D: Category} {a b: [D]} (f: a~>b) {c c': [C]} (fc: c~>c') :
+    hom[Δ[a]] fc >> constant_transform_tf f c' = constant_transform_tf f c >> hom[Δ[b]] fc.
+simpl. now rewrite cat_id_l, cat_id_r.
+Defined.
+
+(* Morally Δ[a] ⇒ Δ[b], but explicited to type correctly (with category C) *)
+Definition constant_transform {C D: Category} {a b: [D]} (f: a~>b) : @constant_functor C D a ⇒ Δ[b] := {|
+    transform := constant_transform_tf f;
+    naturality _ _ := constant_transform_nat f;
+|}.
+
+(* Δ without builtin argument, keeping the structure of a functor *)
+Definition delta_functor {C D: Category} : D → (functor_category C D).
+apply (Build_Functor D (functor_category C D) (fun d => Δ[d]) (fun a b f => constant_transform f))
+  ; intros ; apply transform_simpl_eq ; now unfold constant_transform, constant_transform_tf.
+Defined.
+
+Definition unit_curry {C D: Category} (F: C → D) : '* → functor_category C D.
+apply (Build_Functor '* (functor_category C D) (fun tt => F) (fun _ _ _ => id_nat[F])).
+- reflexivity.
+- intros. simpl. now rewrite id_transform_id_r.
+Defined.
+
+Definition unit_uncurry {C D: Category} (F: '* → functor_category C D) : C → D.
+apply (Build_Functor C D (fun x => ob[ob[F] tt] x) (fun _ _ f => hom[ob[F] tt] f)).
+- intro. apply f_id_distr.
+- intros. apply f_commute.
+Defined.
+
+Lemma unit_curry_uncurry_id {C D: Category} (F: C → D) : unit_uncurry (unit_curry F) = F.
+now destruct F.
+Qed.
 
 (*
 Program Definition functor_transform {C D E : Category} {G H : D → E} (F : C → D) (t : G ⇒ H) : F >>> G ⇒ F >>> H := {|

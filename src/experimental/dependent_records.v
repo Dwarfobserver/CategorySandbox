@@ -1,36 +1,10 @@
 
 Require Import Category Functor FunctionalExtensionality Program.Equality ProofIrrelevance.
 
-(* This file aims to experiment & simplify proofs about equality of dependent records *)
-
-Fixpoint valid (n: nat) : bool :=
-  match n with
-    | 0 => true
-    | 1 => false
-    | S (S p) => valid p
-  end.
-
-Record valid_nat : Type :=
-  { VN_value : nat ;
-    VN_prop  : valid VN_value = true }.
-
 Definition transport {A : Type} (B : A -> Type) {a b : A}: a = b -> B a -> B b.
 Proof.
   intros [] ?; assumption.
 Defined.
-
-Lemma valid_nat_unique (m n : valid_nat) (p : VN_value m = VN_value n):
-  transport (fun k => valid k = true) p (VN_prop m) = VN_prop n ->
-  m = n.
-Proof.
-  destruct m; destruct n.
-  simpl in * |- *.
-  destruct p.
-  intros [].
-  reflexivity.
-Qed.
-
-(* Pre-cat *)
 
 Definition transport_hom o := o->o->Type.
 
@@ -68,7 +42,7 @@ Qed.
 Definition cat_oh_of (C: Category) := Build_Cat_ObHom ob hom.
 Definition cat_data_of (C: Category) := Build_Cat_Data (cat_oh_of C) id (@comp C).
 
-Lemma eq_category (C D: Category) : cat_data_of C = cat_data_of D -> C = D.
+Lemma cat_simpl_eq (C D: Category) : cat_data_of C = cat_data_of D -> C = D.
 set (c := cat_data_of C).
 set (d := cat_data_of D).
 intro e.
@@ -88,17 +62,19 @@ now dependent destruction e.
 destruct e_hom.
 
 assert (e_id : id = id0).
+apply functional_extensionality_dep ; intro.
 assert (e_idc : id = c2_id c). reflexivity.
 assert (e_idd : id0 = c2_id d). reflexivity.
+rewrite e_idc, e_idd.
 dependent destruction e.
 admit.
 destruct e_id.
 
 assert (e_comp : comp = comp0).
+repeat (apply functional_extensionality_dep ; intro).
 admit.
 destruct e_comp.
 
-(* Is transporting proofs possible ? Otherwise use UIP *)
 assert (e_id_r : cat_id_r = cat_id_r0).
 apply proof_irrelevance. destruct e_id_r.
 

@@ -1,5 +1,5 @@
 
-Require Import Category Functor Transform FunctionalExtensionality Setoid Equality ProofIrrelevance.
+Require Import Category Functor Transform Comma FunctionalExtensionality Setoid Equality ProofIrrelevance.
 
 (* +----------------+
    | Slice category |
@@ -58,31 +58,27 @@ Lemma slice_comp_assoc {C: Category} {c: ob} {x y z w: slice_ob c}
 apply slice_hom_simpl_eq. simpl. apply cat_comp_assoc.
 Defined.
 
+End Slice.
+
 Instance slice_cat {C: Category} (c: ob) : Category.
-apply (Build_Category (slice_ob c) (@slice_hom C c) (@slice_id C c) (@slice_comp C c)) ; intros.
-- apply slice_id_r.
-- apply slice_id_l.
-- apply slice_comp_assoc.
+apply (Build_Category (Slice.slice_ob c) (@Slice.slice_hom C c) (@Slice.slice_id C c) (@Slice.slice_comp C c)) ; intros.
+- apply Slice.slice_id_r.
+- apply Slice.slice_id_l.
+- apply Slice.slice_comp_assoc.
 Defined.
 
 Instance coslice_cat {C: Category} (c: ob) : Category := op_cat (slice_cat c).
 (* Can prove theorems to simplify computation of under / coslice category. *)
 
-End Slice.
-
-Notation "c ↓ C" := (@Slice.slice_cat C c) (at level 14, format "c ↓ C").
-Notation "c ↑ C" := (@Slice.coslice_cat C c) (at level 14, format "c ↑ C").
+Notation "c ↓ C" := (@slice_cat C c) (at level 14, format "c ↓ C").
+Notation "c ↑ C" := (@coslice_cat C c) (at level 14, format "c ↑ C").
 
 (* +-----------+
    | Test cone |
    +-----------+
 *)
 
-Definition const_ffunct {A: Category} {I: Category} (a: [A]) : I → A := Δ[a].
-
-Definition Cone {I C: Category} (D: I → C) (c: [C]) : Δ[c] ⇒ D.
-
-Definition Cone_cat {I C: Category} (D: I → C) := constant_functor ⇒ D.
+(* TODO: Make cone_cat equivalences with slice cat *)
 
 (* +--------------------+
    | Discrete instances |
