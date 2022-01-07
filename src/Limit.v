@@ -1,4 +1,4 @@
-Require Import Category Functor Transform.
+Require Import Category Functor Transform Comma.
 Require Import Coq.Setoids.Setoid.
 
 Definition universal_arrow {C : Category} (a b : [C]) := 
@@ -43,4 +43,13 @@ Lemma terminals_are_isom {C : Category} (a b : [C]) :
 Proof.
 rewrite !terminal_iff_initial_op, <- op_isom_iff_isom. now apply initials_are_isom.
 Qed.
+
+Definition is_limit {I C : Category} {D : I → C} (δ : [Comma.cone_cat D]) := @is_terminal (Comma.cone_cat D) δ.
+
+Lemma limits_are_isom {I C : Category} (D : I → C) (δ δ' : [Comma.cone_cat D]) :
+    is_limit δ -> is_limit δ' -> δ ≃ δ'.
+Proof.
+apply terminals_are_isom.
+Qed.
+
 

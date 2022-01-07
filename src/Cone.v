@@ -1,5 +1,7 @@
-Require Import Category Functor Transform Limit.
+(* Not useful anymore because Cone now comes from Comma *)
+(* Require Import Category Functor Transform Limit.
 Require Import FunctionalExtensionality ProofIrrelevance.
+
 Class cone {I C : Category} (D : I → C) := {
     base : [C];
     tf : Δ[base] ⇒ D;
@@ -58,10 +60,7 @@ Proof.
 apply terminals_are_isom.
 Qed.
 
-
-    
-
-
+*)
 
 
 

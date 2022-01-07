@@ -10,7 +10,7 @@ Class Transform {C D : Category} {F G : C → D} := {
 
 Notation "F ⇒ G" := (@Transform _ _ F G) (at level 90, right associativity).
 Notation "tf[ t ]" := (@transform _ _ _ _ t) (at level 9, format "tf[ t ]").
-Notation "nat[ t ]" := (@naturality _ _ _ _ _ _ t) (at level 9, format "nat[ t ]").
+Notation "nat[ t , f ]" := (@naturality _ _ _ _ t _ _ f) (at level 9, format "nat[ t , f ]").
 
 Coercion transform : Transform >-> Funclass.
 

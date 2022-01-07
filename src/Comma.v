@@ -1,4 +1,4 @@
-Require Import Category Functor Transform Limit Equality ProofIrrelevance.
+Require Import Category Functor Transform Equality ProofIrrelevance.
 
 Module Comma.
 
@@ -78,4 +78,40 @@ apply (Build_Category (Comma.comma_ob S T) Comma.comma_mph (fun x => Comma.comma
 Defined.
 
 (* Need shortcuts to be really usable *)
-Definition cone_cat {I C: Category} (D: I → C) := comma_cat (unit_curry D) delta_functor.
+Definition cone_cat {I C: Category} (D: I → C) : Category := comma_cat delta_functor (unit_curry D).
+
+(* 
+    Here, an object in cone_cat D is a triple (c : [C], unit, t : Δc ⥰ D)
+    Let's make sure we can retrieve this data easily
+*)
+Definition cone_base {I C: Category} {D: I → C} (d : [cone_cat D]) : [C] := @Comma.dom _ _ _ _ _ d.
+Definition cone_transform {I C: Category} {D: I → C} (d : [cone_cat D]) : Δ[cone_base d] ⇒ D := @Comma.mph _ _ _ _ _ d.
+
+Lemma cone_naturality {I C: Category} {D: I → C} {i j : [I]} (d : [cone_cat D]) (u : i ~> j) : 
+    tf[cone_transform d] i >> hom[D] u = tf[cone_transform d] j.
+Proof.
+rewrite <- (nat[cone_transform d, u]). simpl. now rewrite cat_id_l.
+Qed.
+
+
+Program Definition construct_cone_transform {I C: Category} {D: I → C} 
+    (c : [C]) (tf : forall i : [I], c ~> ob[D] i)
+    (nat : forall i j, forall u : i ~> j, tf i >> hom[D] u = tf j) : Δ[c] ⇒ D := {| 
+        transform := tf;
+    |}.
+Next Obligation.
+rewrite cat_id_l. apply eq_sym. apply (nat a b f).
+Defined.
+
+Program Definition construct_cone {I C: Category} {D: I → C} 
+    (base : [C]) (tf : forall i : [I], base ~> ob[D] i)
+    (nat : forall i j, forall u : i ~> j, tf i >> hom[D] u = tf j) : [cone_cat D] := {| 
+        Comma.dom := base; 
+    |}.
+Next Obligation.
+easy.
+Defined.
+Next Obligation.
+exact (construct_cone_transform base tf nat).
+Defined.
+
