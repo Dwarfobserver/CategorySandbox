@@ -164,15 +164,19 @@ apply eq_sym in H3.
 assert (g' >> pullback_to_a_mph p >> hom[D] Pullback.X_to_Z = g' >> pullback_to_b_mph p >> hom[D] Pullback.Y_to_Z).
 now rewrite H0, H2 in H3.
 pose (cone := commutative_pullback_square_to_cone D x (g >> pullback_to_a_mph p) (g >> pullback_to_b_mph p) H3).
-pose (cone' := commutative_pullback_square_to_cone D x (g' >> pullback_to_a_mph p) (g' >> pullback_to_b_mph p) H4).
-assert (cone = cone').
-unfold cone, cone'. apply proof_irrelevance.
-rewrite H0.
-
 unfold is_pullback, is_limit, is_terminal in hyp_pullback. specialize (hyp_pullback cone). unfold universal_arrow in hyp_pullback.
 destruct hyp_pullback as [phi].
 pose (phi_g := pullback_morphism_to_cone_morphism D cone p g eq_refl eq_refl).
-assert (phi_g = phi). exact (eq_sym (H4 phi_g)).
+pose (phi_g' := pullback_morphism_to_cone_morphism D cone p g' (eq_sym H0) (eq_sym H2)).
+assert (phi_g = phi). exact (eq_sym (H5 phi_g)).
+assert (phi_g' = phi). exact (eq_sym (H5 phi_g')).
+assert (phi_g = phi_g'). now rewrite H6, H7. 
+assert (cone_mph_to_induced_mph phi_g = cone_mph_to_induced_mph phi_g').
+now apply same_cone_morphism_same_induced_morphism. 
+unfold cone_mph_to_induced_mph, Comma.source_mph in H9. now simpl in H9.
+Qed.
+
+
 
 
 

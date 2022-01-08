@@ -123,3 +123,12 @@ Next Obligation.
 rewrite id_transform_id_r. apply transform_simpl_eq. apply functional_extensionality_dep. intro.
 unfold compose_transform. simpl. specialize (nat x). unfold constant_transform_tf. apply eq_sym. assumption.
 Defined.
+
+Definition cone_mph_to_induced_mph {I C: Category} {D: I → C} {p1 p2 : [cone_cat D]} (phi : p1 ~> p2) : 
+    (cone_base p1 ~> cone_base p2) := @Comma.source_mph _ _ _ _ _ p1 p2 phi.
+
+Lemma same_cone_morphism_same_induced_morphism {I C: Category} {D: I → C} (p1 p2 : [cone_cat D]) (phi phi' : p1 ~> p2) :
+    phi = phi' -> cone_mph_to_induced_mph phi = cone_mph_to_induced_mph phi'.
+Proof.
+intro. now rewrite H.
+Qed.
