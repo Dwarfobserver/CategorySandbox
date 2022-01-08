@@ -1,4 +1,4 @@
-Require Import Category Functor Transform Equality ProofIrrelevance.
+Require Import Category Functor Transform Equality ProofIrrelevance FunctionalExtensionality.
 
 Module Comma.
 
@@ -106,12 +106,20 @@ Defined.
 Program Definition construct_cone {I C: Category} {D: I → C} 
     (base : [C]) (tf : forall i : [I], base ~> ob[D] i)
     (nat : forall i j, forall u : i ~> j, tf i >> hom[D] u = tf j) : [cone_cat D] := {| 
-        Comma.dom := base; 
+        Comma.dom := base;
+        Comma.cod := tt; 
     |}.
-Next Obligation.
-easy.
-Defined.
 Next Obligation.
 exact (construct_cone_transform base tf nat).
 Defined.
 
+(* A morphism of cone is morally a morphism in the category C s.t. all triangles commute *)
+Program Definition morphism_to_cone_morphism {I C: Category} {D: I → C} (p1 p2 : [cone_cat D]) (f : cone_base p1 ~> cone_base p2)
+(nat : forall i : [I], tf[cone_transform p1] i = f >> tf[cone_transform p2] i) : p1 ~> p2 := {|
+    Comma.source_mph := f;
+    Comma.target_mph := tt;
+|}.
+Next Obligation. 
+rewrite id_transform_id_r. apply transform_simpl_eq. apply functional_extensionality_dep. intro.
+unfold compose_transform. simpl. specialize (nat x). unfold constant_transform_tf. apply eq_sym. assumption.
+Defined.
