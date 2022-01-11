@@ -6,6 +6,8 @@ src/Functor.v
 src/Transform.v
 src/Limit.v
 src/Comma.v
+src/Pullback.v
+src/Egalizer.v
 src/Yoneda.v
 src/experimental/dependent_records.v
 src/experimental/Egality.v
