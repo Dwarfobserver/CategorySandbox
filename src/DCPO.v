@@ -90,7 +90,6 @@ unfold preserve_lub_.
 pose (lub_Δ := cp_dir Δ hD).
 pose (lub_fΔ := lub_pass_trough f f↑ Δ hD).
 assert (f ⋁Δ = ⋁ (f|Δ)). apply preserve_lub.
-unfold least_upper_bound.
+unfold least_upper_bound at 1.
 unfold least_upper_bound, lub_Δ in H.
-rewrite H.
-
+rewrite H. fold least_upper_bound. 
