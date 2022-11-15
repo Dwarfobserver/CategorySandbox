@@ -1,7 +1,7 @@
 
 # Categories Sandbox
 
-LMFI Coq project with Mathieu & Sidney.
+LMFI Coq project with Clémence & Sidney.
 
 Useful actions :
 
